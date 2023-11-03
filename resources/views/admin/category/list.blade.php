@@ -117,7 +117,8 @@
 @section('scripts')
 <script type="text/javascript">
     $(function () {
-      var table = $('.catetable').DataTable({
+
+        var table = $('.catetable').DataTable({
           processing: true,
           serverSide: true,
           ajax: "{{ route('list_cat') }}",
@@ -143,7 +144,9 @@
                         $('#name').val(" ");
 
                         $('#staticBackdrop').modal('hide');
-                        location.reload();
+                                
+                        var table = $('.catetable').DataTable();
+                        table.ajax.reload();
                     }
                 },
                 error:function(xhr,status,error){
@@ -191,8 +194,11 @@
             dataType: 'json',
             success: function (response) {
                 if(response.status == 'true'){
-                    $('#cat'+response.id).remove();
+                    // $('#cat'+response.id).remove();
                     $('#deletemodal').modal('hide');
+                            
+                    var table = $('.catetable').DataTable();
+                    table.ajax.reload();
                 }
             }
         });
@@ -239,7 +245,9 @@
                         $('#edit_id').val(" ");
 
                         $('#employeeedit').modal('hide');
-                        location.reload();
+                                
+                        var table = $('.catetable').DataTable();
+                        table.ajax.reload();
                     }
                 },
                 error:function(xhr,status,error){
@@ -261,37 +269,6 @@
                         });
                 }
             });
-    });
-
-    $('#search').on('input',function(){
-        var value = $(this).val();
-        var _token = $("input[name=_token]").val();
-        $.ajax({
-            url: "{{route('category.store')}}",
-            type: 'get',
-            data: {value:value,_token:_token},
-            dataType: 'json',
-            success: function (response) {
-                if(response.status == 'true'){
-                    var itemDetails = '';
-                        var i = 0;
-                        $.each(response.employees, function (i, itemDetail){
-                            i = i + 1;
-                            itemDetails += '<tr class="table-custom" id="emp'+itemDetail.id+'">';
-                            itemDetails += '<td>' + i + '</td>' ;
-                            itemDetails += '<td>' + itemDetail.employee_id + '</td>' ;
-                            itemDetails += '<td>' + itemDetail.employee_name + '</td>' ;
-                            itemDetails += '<td>' + itemDetail.employee_designation + '</td>' ;
-                            itemDetails += '<td>' + itemDetail.employee_salary + '</td>' ;
-                            itemDetails += '<td>' + itemDetail.employee_target + '</td>' ;
-                            // itemDetails += '<td> \<input type="button" class="btn-popup-pd plus" data-id=" '+itemDetail.id +'" value="+">\</td>'
-                            itemDetails += '<td> \<div><i style="font-size: 16px;margin: 0px 5px;color: #00C708;" data-bs-toggle="modal"  onclick="modalincome('+itemDetail.id+');" class="bi bi-currency-rupee"></i><i style="font-size: 16px;margin: 0px 5px;color: #4E9AFF;" class="bi bi-pencil-fill" onclick="editemploye('+itemDetail.id+')"></i> <i style="font-size: 16px;margin: 0px 5px;color: #FF5F5F;" class="bi bi-trash-fill" onclick="deletemploye('+itemDetail.id+')"></i> </div>\</td>'
-                            itemDetails += '</tr>';
-                        });
-                        $('#employlist tbody').html(itemDetails);
-                }
-            }
-        });
     });
 </script>
 @endsection

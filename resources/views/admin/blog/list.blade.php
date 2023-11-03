@@ -79,6 +79,15 @@
                             <input placeholder="Date" class="form-control mb-1 date" name="date" id="date" type="text"  onfocus="(this.type = 'date')">
                         </div>
                     </div>
+                    <div class="row mb-3">
+                        <div class="col-xl-4 col-md-4 col-sm-12">
+                                <select name="category[]" id="category" class="form-control" multiple>
+                                    @foreach($categories as $Category)
+                                        <option value="{{$Category->id}}">{{$Category->category_name}}</option>
+                                    @endforeach
+                                </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn model-btn" data-bs-dismiss="modal" aria-label="Close">Cancel</button>
@@ -116,6 +125,13 @@
                         </div>
                         <div class="col-xl-4 col-md-4 col-sm-12">
                             <input placeholder="Date" class="form-control mb-1 date" name="edit_date" id="edit_date" type="text"  onfocus="(this.type = 'date')">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-xl-4 col-md-4 col-sm-12">
+                                <select name="edit_category[]" id="edit_category" class="form-control" multiple>
+                                    
+                                </select>
                         </div>
                     </div>
                 </div>
@@ -177,7 +193,7 @@ $('#employeSave').on('click', function () {
     var author = $('#author').val();
     var content = $('#content').val();
     var image = $("#image")[0].files[0]; // Get the file input element
-
+    var category = $("#category").val();
     var date = $('#date').val();
 
     var formData = new FormData(); // Create a FormData object
@@ -185,6 +201,7 @@ $('#employeSave').on('click', function () {
     formData.append('author', author);
     formData.append('content', content);
     formData.append('image', image);
+    formData.append('category', [category]);
     formData.append('date', date);
     formData.append('_token', _token);
 
@@ -200,11 +217,14 @@ $('#employeSave').on('click', function () {
                 $('#name').val(" ");
                 $('#author').val(" ");
                 $('#content').val(" ");
-                $('#image').val(" ");
                 $('#date').val(" ");
 
+
                 $('#staticBackdrop').modal('hide');
-                location.reload();
+                var table = $('.blogtable').DataTable();
+                table.ajax.reload();
+                
+                // location.reload();
             }
         },
                 error:function(xhr,status,error){
@@ -252,8 +272,9 @@ $('#employeSave').on('click', function () {
             dataType: 'json',
             success: function (response) {
                 if(response.status == 'true'){
-                    $('#blog'+response.id).remove();
                     $('#deletemodal').modal('hide');
+                    var table = $('.blogtable').DataTable();
+                    table.ajax.reload();
                 }
             }
         });
@@ -276,6 +297,11 @@ $('#employeSave').on('click', function () {
                         $('#edit_author').val(response.blog.Author);
                         $('#edit_content').val(response.blog.Content);
                         $('#edit_date').val(response.blog.Date);
+
+                        $.each(response.blog.categories, function(key, value){
+                            $('#edit_category').append('<option selected value="'+value.id+'">'+ value.category_name+'</option>');
+                        });
+                        
 
                         $('#employeeedit').modal('show');
                     }
@@ -329,7 +355,8 @@ $('#employeSave').on('click', function () {
                         $('#edit_id').val(" ");
 
                         $('#employeeedit').modal('hide');
-                        location.reload();
+                        var table = $('.blogtable').DataTable();
+                        table.ajax.reload();
                     }
                 },
                 error:function(xhr,status,error){

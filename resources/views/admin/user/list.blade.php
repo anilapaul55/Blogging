@@ -143,6 +143,7 @@
 @section('scripts')
 <script type="text/javascript">
     $(function () {
+
       var table = $('.usertable').DataTable({
           processing: true,
           serverSide: true,
@@ -157,23 +158,6 @@
       });
     });
 </script>
-<script type="text/javascript">
-    $(function () {
-      
-      var table = $('.data-table').DataTable({
-          processing: true,
-          serverSide: true,
-          ajax: "{{ route('list') }}",
-          columns: [
-              {data: 'DT_RowIndex', name: 'DT_RowIndex'},
-              {data: 'name', name: 'name'},
-              {data: 'email', name: 'email'},
-              {data: 'action', name: 'action', orderable: false, searchable: false},
-          ]
-      });
-      
-    });
-  </script>
 <script>
     $('#employeSave').on('click',function(){
         var _token = $("input[name=_token]").val();
@@ -194,7 +178,9 @@
                         $('#password').val(" ");
 
                         $('#staticBackdrop').modal('hide');
-                        location.reload();
+                                        
+                        var table = $('.usertable').DataTable();
+                        table.ajax.reload();
                     }
                 },
                 error:function(xhr,status,error){
@@ -236,8 +222,11 @@
             dataType: 'json',
             success: function (response) {
                 if(response.status == 'true'){
-                    $('#emp'+response.id).remove();
+                    // $('#emp'+response.id).remove();
                     $('#deletemodal').modal('hide');
+                                    
+                    var table = $('.usertable').DataTable();
+                    table.ajax.reload();
                 }
             }
         });
@@ -291,7 +280,9 @@
                         $('#edit_id').val(" ");
 
                         $('#employeeedit').modal('hide');
-                        location.reload();
+                                        
+                        var table = $('.usertable').DataTable();
+                        table.ajax.reload();
                     }
                 },
                 

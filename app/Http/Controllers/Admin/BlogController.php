@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 
 use Illuminate\Support\Str;
 use App\Models\Blog;
+use App\Models\BlogCategory;
+
+
+use App\Models\Category;
 use DataTables;
 use App\Http\Requests\BlogRequest;
 
@@ -20,7 +24,8 @@ class BlogController extends Controller
     public function index()
     {
         // $blogs = Blog::all();
-        return view('Admin.blog.list');
+        $categories = Category::all();
+        return view('Admin.blog.list',compact('categories'));
         // return view('Admin.blog.list',compact('blogs'));
     }
 
@@ -81,7 +86,17 @@ class BlogController extends Controller
         $blog->Author = $request->author;
         $blog->Content = $request->content;
         $blog->Image = $imag_path;
-        if($blog->save()){
+        $blog->save();
+        $cats = explode(',', $request->category);
+        foreach($cats as $cat){
+            $blogcat = new BlogCategory();
+            $blogcat->blog_id = $blog->id;
+            $blogcat->category_id = $cat;
+            $blogcat->status = "active";
+            $blogcat->save();
+        }
+
+        if($blog){
             $resp['status'] = 'true';
             return json_encode($resp);
         }
@@ -107,6 +122,13 @@ class BlogController extends Controller
     public function edit($id)
     {
         $blog = Blog::where('id','=',$id)->first();
+        $blog_cats = BlogCategory::where('blog_id',$blog->id)->get();
+        $cats = [];
+        foreach($blog_cats as $blog_cat){
+            $cats[] = Category::where('id', $blog_cat->category_id)->first();
+        }
+        $blog['categories'] = $cats;
+        $blog['total_categories'] = Category::all();
         if($blog){
             $resp['status'] = 'true';
             $resp['blog'] = $blog;
