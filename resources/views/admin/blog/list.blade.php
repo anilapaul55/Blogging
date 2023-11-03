@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('contant')
+
 <style>
     @media screen and (max-width: 1000px) {
         .xc-row {
@@ -40,6 +41,7 @@
                             <th class="salary">Image</th>
                             <th class="salary">Action</th>
                         </tr>
+                        <img src="" alt="">
                     <tbody>
                     </tbody>
                 </table>
@@ -162,39 +164,69 @@
               {data: 'Date', name: 'Date'},
               {data: 'Author', name: 'Author'},
               {data: 'Content', name: 'Content'},
-              {data: 'image', name: 'image'},
+              {data: 'imagecostum', name: 'image'},
               {data: 'action', name: 'action', orderable: false, searchable: false},
           ]
       });
     });
   </script>
 <script>
-    $('#employeSave').on('click',function(){
-        var _token = $("input[name=_token]").val();
-        var name = $('#name').val();
-        var author = $('#author').val();
-        var content = $('#content').val();
-        var image = $('#image').val();
-        var date = $('#date').val();
-            $.ajax({
-                url: "{{route('blog.store')}}",
-                type: 'post',
-                data: {name: name,author:author,content:content,image:image,date:date,_token:_token},
-                dataType: 'json',
-                success: function (response) {
-                    if(response.status == 'true'){
-                        $('#name').val(" ");
-                        $('#author').val(" ");
-                        $('#content').val(" ");
-                        $('#image').val(" ");
-                        $('#date').val(" ");
+$('#employeSave').on('click', function () {
+    var _token = $("input[name=_token]").val();
+    var name = $('#name').val();
+    var author = $('#author').val();
+    var content = $('#content').val();
+    var image = $("#image")[0].files[0]; // Get the file input element
 
-                        $('#staticBackdrop').modal('hide');
-                        location.reload();
-                    }
+    var date = $('#date').val();
+
+    var formData = new FormData(); // Create a FormData object
+    formData.append('name', name);
+    formData.append('author', author);
+    formData.append('content', content);
+    formData.append('image', image);
+    formData.append('date', date);
+    formData.append('_token', _token);
+
+    $.ajax({
+        url: "{{ route('blog.store') }}",
+        type: 'post',
+        data: formData, // Use the FormData object as the data
+        contentType: false, // Set content type to false
+        processData: false, // Set processData to false
+        dataType: 'json',
+        success: function (response) {
+            if (response.status == 'true') {
+                $('#name').val(" ");
+                $('#author').val(" ");
+                $('#content').val(" ");
+                $('#image').val(" ");
+                $('#date').val(" ");
+
+                $('#staticBackdrop').modal('hide');
+                location.reload();
+            }
+        },
+                error:function(xhr,status,error){
+                    // alert(status);
+                    console.log(JSON.parse(xhr.responseText).errors);
+                    var errordata = JSON.parse(xhr.responseText).errors;
+                    var errorMessages = {};
+
+                        if (errordata) {
+                            for (var key in errordata) {
+                                if (errordata.hasOwnProperty(key)) {
+                                    errorMessages[key] = errordata[key].join(" ");
+                                }
+                            }
+                        }
+                        $.each(errorMessages, function (key,value){
+
+                        alert(value);
+                        });
                 }
-            });
     });
+});
 
     function modalincome(id){
         $('#id').val(id);
@@ -231,7 +263,7 @@
         var _token = $("input[name=_token]").val();
                 
         var url = "{{ route('blog.edit',":id") }}";
-        url = url.replace(':id', id);
+            url = url.replace(':id', id);
             $.ajax({
                 url: url,
                 type: 'get',
@@ -243,11 +275,28 @@
                         $('#edit_name').val(response.blog.Name);
                         $('#edit_author').val(response.blog.Author);
                         $('#edit_content').val(response.blog.Content);
-                        $('#edit_image').val(response.blog.Image);
                         $('#edit_date').val(response.blog.Date);
 
                         $('#employeeedit').modal('show');
                     }
+                },
+                error:function(xhr,status,error){
+                    // alert(status);
+                    console.log(JSON.parse(xhr.responseText).errors);
+                    var errordata = JSON.parse(xhr.responseText).errors;
+                    var errorMessages = {};
+
+                        if (errordata) {
+                            for (var key in errordata) {
+                                if (errordata.hasOwnProperty(key)) {
+                                    errorMessages[key] = errordata[key].join(" ");
+                                }
+                            }
+                        }
+                        $.each(errorMessages, function (key,value){
+
+                        alert(value);
+                        });
                 }
             });
     }
@@ -257,10 +306,12 @@
         var name = $('#edit_name').val();
         var author = $('#edit_author').val();
         var content = $('#edit_content').val();
-        var image = $('#edit_image').val();
+        // var image = $('#edit_image').val();
         var date = $('#edit_date').val();
         var id = $('#edit_id').val();
 
+        var image = $("#edit_image")[0].files[0]; // Get the file input element
+        // var formData = new FormData(); // Create a FormData object
                 
         var url = "{{ route('blog.update',":id") }}";
         url = url.replace(':id', id);
@@ -280,6 +331,9 @@
                         $('#employeeedit').modal('hide');
                         location.reload();
                     }
+                },
+                error:function(xhr,status,error){
+                    alert(status);
                 }
             });
     });

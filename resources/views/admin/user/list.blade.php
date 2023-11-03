@@ -176,7 +176,6 @@
   </script>
 <script>
     $('#employeSave').on('click',function(){
-        alert(123);
         var _token = $("input[name=_token]").val();
         var name = $('#name').val();
         var email = $('#email').val();
@@ -197,6 +196,24 @@
                         $('#staticBackdrop').modal('hide');
                         location.reload();
                     }
+                },
+                error:function(xhr,status,error){
+                    // alert(status);
+                    console.log(JSON.parse(xhr.responseText).errors);
+                    var errordata = JSON.parse(xhr.responseText).errors;
+                    var errorMessages = {};
+
+                        if (errordata) {
+                            for (var key in errordata) {
+                                if (errordata.hasOwnProperty(key)) {
+                                    errorMessages[key] = errordata[key].join(" ");
+                                }
+                            }
+                        }
+                        $.each(errorMessages, function (key,value){
+
+                        alert(value);
+                        });
                 }
             });
     });
@@ -277,8 +294,24 @@
                         location.reload();
                     }
                 },
-                error: function(response){
-                    console.log(JSON.stringify(response.responseText).errors);
+                
+                error:function(xhr,status,error){
+                    // alert(status);
+                    console.log(JSON.parse(xhr.responseText).errors);
+                    var errordata = JSON.parse(xhr.responseText).errors;
+                    var errorMessages = {};
+
+                        if (errordata) {
+                            for (var key in errordata) {
+                                if (errordata.hasOwnProperty(key)) {
+                                    errorMessages[key] = errordata[key].join(" ");
+                                }
+                            }
+                        }
+                        $.each(errorMessages, function (key,value){
+
+                        alert(value);
+                        });
                 }
             });
     });

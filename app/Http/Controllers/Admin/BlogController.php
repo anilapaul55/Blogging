@@ -30,14 +30,17 @@ class BlogController extends Controller
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('action', function($row){
-   
                            $btn = '<i style="font-size: 16px;margin: 0px 5px;color: #4E9AFF;" class="bi bi-pencil-fill" onclick="editblog('.$row->id.')"></i>
                            <i style="font-size: 16px;margin: 0px 5px;color: #FF5F5F;" class="bi bi-trash-fill" onclick="deletblog('.$row->id.')"></i>
                            ';
-     
                             return $btn;
                     })
-                    ->rawColumns(['action'])
+                    ->addColumn('imagecostum', function($row){
+                        $btn = '<img src="/img/blog/'. $row->Image.'" style="width:60px; height:60px; object-fit:contain;" alt="">
+                        ';
+                         return $btn;
+                 })
+                    ->rawColumns(['action','imagecostum'])
                     ->make(true);
         }
       
@@ -62,6 +65,7 @@ class BlogController extends Controller
      */
     public function store(BlogRequest $request)
     {
+        // dd($request);
         $image = $request->file('image');
         $imag_path = '';
         if (!empty($image)) {

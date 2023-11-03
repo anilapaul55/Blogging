@@ -145,6 +145,24 @@
                         $('#staticBackdrop').modal('hide');
                         location.reload();
                     }
+                },
+                error:function(xhr,status,error){
+                    // alert(status);
+                    console.log(JSON.parse(xhr.responseText).errors);
+                    var errordata = JSON.parse(xhr.responseText).errors;
+                    var errorMessages = {};
+
+                        if (errordata) {
+                            for (var key in errordata) {
+                                if (errordata.hasOwnProperty(key)) {
+                                    errorMessages[key] = errordata[key].join(" ");
+                                }
+                            }
+                        }
+                        $.each(errorMessages, function (key,value){
+
+                        alert(value);
+                        });
                 }
             });
     });
@@ -223,6 +241,24 @@
                         $('#employeeedit').modal('hide');
                         location.reload();
                     }
+                },
+                error:function(xhr,status,error){
+                    // alert(status);
+                    console.log(JSON.parse(xhr.responseText).errors);
+                    var errordata = JSON.parse(xhr.responseText).errors;
+                    var errorMessages = {};
+
+                        if (errordata) {
+                            for (var key in errordata) {
+                                if (errordata.hasOwnProperty(key)) {
+                                    errorMessages[key] = errordata[key].join(" ");
+                                }
+                            }
+                        }
+                        $.each(errorMessages, function (key,value){
+
+                        alert(value);
+                        });
                 }
             });
     });
