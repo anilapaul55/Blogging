@@ -16,10 +16,11 @@ use App\Http\Controllers\Admin\UserController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
+Route::get('/', [App\Http\Controllers\Controller::class, 'welcome'])->name('welcome');
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
