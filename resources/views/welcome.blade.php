@@ -34,11 +34,11 @@
             <div>
                 {{-- <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block"> --}}
                     @auth
-                        <a href="{{ url('/home') }}">Home</a>
+                        <a href="{{ url('/home') }}" style="float: left; font-weight:900; padding: 10px 0px 0px 10px; color: blue;">Home</a>
                     @else
                         <a href="{{ route('login') }} "style="float: left; font-weight:900; padding: 10px 0px 0px 10px; color: blue;">Log in</a>
 
-                        @if (Route::has('register'))
+                        @if (!Route::has('register'))
                             <a href="{{ route('register') }}" style="float: right; font-weight:900; padding: 10px 10px 0px 0px; color: blue;">Register</a>
                         @endif
                     @endauth
